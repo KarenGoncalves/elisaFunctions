@@ -15,43 +15,40 @@
 #' @export
 #' @name rmbg_gm_gc
 
-rmbg_gm_gc <- function(data, background, treatments, condition_column, measure_column, plate_column){
+rmbg_gm_gc <- function(data, background, treatments, condition_column, measure_column, plate_column, concentration_column){
 
   plates <- list()
-  plate_col <- ifelse(is.numeric(plate_column),
-                      plate_column,
-                      which(colnames(data) == plate_column))
-  cond_col <- ifelse(is.numeric(condition_column),
-                     condition_column,
-                     which(colnames(data) == condition_column))
-  meas_col <- ifelse(is.numeric(measure_column),
-                     measure_column,
-                     which(colnames(data) == measure_column))
+  cond_col <- which(colnames(data) == condition_column)
+  meas_col <- which(colnames(data) == measure_column)
+  plate_col <- which(colnames(data) == plate_column)
+  conc_col <- which(colnames(data) == concentration_column)
 
-  for (i in unique(plate_column)){
-    plates[[i]]$data <- data[data[, plate_col] == i, ]
+  for (i in unique(data[, plate_col])){
+    data_plate <- data[data[, plate_col] == i, ]
 
-    plates[[i]]$model_cond <-
-      plates[[i]]$data[!is.na(as.numeric(plates[[i]]$data[, cond_col])), ]
+    data_nobg <- remove_background(background = background,
+                                   treatments = treatments,
+                                   condition_column = condition_column,
+                                   measure_column = measure_column,
+                                   plate_column = plate_column,
+                                   data = data_plate)
 
-    plates[[i]]$model_cond[, cond_col] <-
-      as.numeric(plates[[i]]$model_cond[, cond_col])
+    modeling <-  get_model(condition_column = condition_column,
+                           measure_column = measure_column,
+                           plate_column = plate_column,
+                           data = data_nobg,
+                           concentration_column = concentration_column)
 
-    plates[[i]]$data_nobg <- remove_background(background = background ,
-                                               treatments = treatments,
-                                               condition_column = cond_col,
-                                               measure_column = meas_col,
-                                               data = plates[[i]]$data)
-
-    plates[[i]]$modeling <-  curve(condition_column = cond_col,
-                                   measure_column = meas_col,
-                                   data = plates[[i]]$model_cond)
-
-    plates[[i]]$final <- concentration(treatments = treatments, condition_column = cond_col,
-                                       measure_column = ncol(plates[[i]]$data_corrected),
-                                       model = plates[[i]]$modeling,
-                                       data = plates[[i]]$data_nobg)
+    plates[[i]] <- get_concentration(treatments = treatments,
+                                     condition_column = condition_column,
+                                     measure_column = paste0('new_', measure_column),
+                                     plate_column = plate_column,
+                                     concentration_column = concentration_column,
+                                     model = modeling[[2]],
+                                     data = data_nobg)
 
   }
-  return(plates)
+
+  final <- do.call(rbind, plates)
+  return(final)
 }
