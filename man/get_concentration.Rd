@@ -4,14 +4,8 @@
 \alias{get_concentration}
 \title{Get concentration from absorbance data}
 \usage{
-get_concentration(
-  treatments,
-  condition_column,
-  measure_column,
-  plate_column,
-  model,
-  data
-)
+get_concentration(treatments, condition_column, measure_column,
+  plate_column, concentration_column, model, data)
 }
 \arguments{
 \item{treatments}{vector with strings for each condition/treatment in the study}
@@ -22,7 +16,7 @@ get_concentration(
 
 \item{plate_column}{column in data that indicates from which plate each data comes from}
 
-\item{model}{named list of lm models, the names of the list should be the same as the strings in}
+\item{model}{named list of lm models (second object of the result of 'get_model'), the names of the list should be the same as the strings in}
 
 \item{data}{name of the dataframe with condition_column and measure_column}
 }

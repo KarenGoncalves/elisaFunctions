@@ -4,14 +4,8 @@
 \alias{remove_background}
 \title{Removes background from absorbance data}
 \usage{
-remove_background(
-  background,
-  treatments,
-  condition_column,
-  measure_column,
-  plate_column,
-  data
-)
+remove_background(background, treatments, condition_column, measure_column,
+  plate_column, data)
 }
 \arguments{
 \item{background}{string in the condition column that indicates which measures are the blank}

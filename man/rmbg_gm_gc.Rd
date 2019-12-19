@@ -4,14 +4,8 @@
 \alias{rmbg_gm_gc}
 \title{Remove background, get model, get concentration}
 \usage{
-rmbg_gm_gc(
-  data,
-  background,
-  treatments,
-  condition_column,
-  measure_column,
-  plate_column
-)
+rmbg_gm_gc(data, background, treatments, condition_column, measure_column,
+  plate_column, concentration_column)
 }
 \arguments{
 \item{data}{name of the dataframe with condition_column and measure_column}

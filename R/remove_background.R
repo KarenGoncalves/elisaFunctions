@@ -27,29 +27,26 @@ remove_background <- function(background, treatments, condition_column, measure_
     stop("Your data in the column of measures is not numeric.")
   }
 
-  for (i in unique(plate_column)){
-    plates[[i]]$new_data <- plates[[i]]$data <- data[data[, plate_col] == i, ]
+  for (i in unique(data[, plate_col])){
+    new_data <- data_work <- data[data[, plate_col] == i, ]
 
     new_measure <- paste0('new_', measure_column)
-    plates[[i]]$new_data$new_measure <-
-      plates[[i]]$data[, meas_col]
-    plates[[i]]$new_data$new_measure <-
-      as.numeric(plates[[i]]$new_data$new_measure)
+    new_data$new_measure <-
+      data_work[, meas_col]
 
-    colnames(plates[[i]]$new_data)[ncol(plates[[i]]$new_data)] <-
+    colnames(new_data)[ncol(new_data)] <-
       new_measure
-    plates[[i]]$mean_background <-
-      mean(plates[[i]]$data[plates[[i]]$data[, cond_col] == background, meas_col])
+    mean_background <-
+      mean(data_work[data_work[, cond_col] == background, meas_col])
 
     for (t in treatments){
-      for (measure in rownames(plates[[i]]$data[plates[[i]]$data[, cond_col] == t,])){
-        plates[[i]]$new_data[measure, ncol(plates[[i]]$new_data)] <-
-          plates[[i]]$data[measure, meas_col] - plates[[i]]$mean_background
+      for (measure in rownames(data_work[data_work[, cond_col] == t,])){
+        new_data[measure, ncol(new_data)] <-
+          data_work[measure, meas_col] - mean_background
       }
     }
 
-    plates[[i]]$new_data$plate <- rep(i, length(plates[[i]]$new_data))
-    plates[[i]] <- plates[[i]]$new_data
+    plates[[i]] <- new_data
 
   }
   corrected <- do.call(rbind, plates)

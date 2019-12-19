@@ -4,13 +4,8 @@
 \alias{get_model}
 \title{Removes background}
 \usage{
-get_model(
-  condition_column,
-  measure_column,
-  plate_column,
-  concentration_column,
-  data
-)
+get_model(condition_column, measure_column, plate_column,
+  concentration_column, data)
 }
 \arguments{
 \item{condition_column}{name of the column where the conditions are listed}
