@@ -37,7 +37,6 @@ get_concentration <- function(treatments, condition_column, measure_column, plat
     }
 
     plates[[i]]$concentration <- measures
-    plates[[i]]$plate <- rep(i, dim(plates[[i]])[2])
 
   }
 
